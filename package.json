@@ -1,0 +1,34 @@
+{
+  "name": "@dlcs/tools",
+  "version": "1.0.0",
+  "description": "Utilities for Deus Legem Creation System",
+  "main": "index.js",
+  "types": "index.d.ts",
+  "private": true,
+  "scripts": {
+    "prepublish": "tsc",
+    "prestart": "tsc",
+    "tsc": "tsc"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/WinUP/dlcs-tools.git"
+  },
+  "author": "Lundarl Gholoi",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/WinUP/dlcs-tools/issues"
+  },
+  "homepage": "https://github.com/WinUP/dlcs-tools#readme",
+  "devDependencies": {
+    "@types/uuid": "3.4.3"
+  },
+  "dependencies": {
+    "rxjs": "5.5.10",
+    "ua-device": "0.1.10",
+    "uuid": "3.2.1"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}
