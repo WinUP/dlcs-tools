@@ -1,12 +1,11 @@
 {
   "name": "@dlcs/tools",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Utilities for Deus Legem Creation System",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "private": false,
   "scripts": {
-    "prepublish": "tsc",
     "prestart": "tsc",
     "tsc": "tsc"
   },
