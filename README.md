@@ -1,5 +1,8 @@
 # DLCS Tools
 
+![status](https://img.shields.io/travis/WinUP/dlcs-tools.svg?style=flat-square)
+[![npm](https://img.shields.io/npm/v/@dlcs/tools.svg?style=flat-square)](https://www.npmjs.com/package/@dlcs/tools)
+
 Tools includes some functions and classes that provide support for other parts of Deus Legem Creation System.
 
 ### AdvancedTree<T>
