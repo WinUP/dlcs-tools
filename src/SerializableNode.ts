@@ -1,5 +1,3 @@
-import { includes } from 'lodash';
-
 /**
  * Serializable node
  */
@@ -72,7 +70,7 @@ export class SerializableNode {
     }
 
     private static _dropNode(root: SerializableNode, node: SerializableNode): void {
-        if (includes(root.children, node)) {
+        if (root.children.indexOf(node) > -1) {
             root.children.splice(root.children.indexOf(node), 1);
         } else {
             root.children.forEach(parent => {
@@ -109,7 +107,7 @@ export class SerializableNode {
     }
 
     private static _address(root: SerializableNode, node: SerializableNode, prefix: string): string | undefined {
-        if (includes(root.children, node)) {
+        if (root.children.indexOf(node) > -1) {
             return `${prefix}/${node.key}`;
         } else if (root.children.length === 0) {
             return undefined;
