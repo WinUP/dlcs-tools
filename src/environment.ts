@@ -61,7 +61,7 @@ export interface ContectDeviceInformation {
     /**
      * Device type
      */
-    type: 'emulator' | 'mobile' | 'desktop' | 'tablet' | 'television' | 'ereader' | 'gaming' | 'media' | '';
+    type: 'emulator' | 'mobile' | 'desktop' | 'tablet' | 'television' | 'ereader' | 'gaming' | 'media' | 'server' | '';
     /**
      * Manufacturer
      */
@@ -75,13 +75,38 @@ export interface ContectDeviceInformation {
 /**
  * Get running context environment information
  */
-export function environment(): ContectDeviceInformation {
+export function environment(): ContextEnvironment {
     return context;
 }
 
-const context = new UA(navigator.userAgent);
-let match: RegExpExecArray | null;
-if (match = /Edge\/([\w.]+)/i.exec(navigator.userAgent)) {
-    context.browser.name = 'Microsoft Edge';
-    context.browser.version.original = match[1];
+let context: ContextEnvironment;
+if (typeof navigator !== 'undefined') {
+    context = new UA(navigator);
+    let match: RegExpExecArray | null;
+    if (match = /Edge\/([\w.]+)/i.exec(navigator.userAgent)) {
+        context.browser.name = 'Microsoft Edge';
+        context.browser.version.original = match[1];
+    }
+} else {
+    const os = require('os');
+    context = {
+        browser: {
+            name: 'NodeJS',
+            version: { original: process.versions.node },
+            mode: ''
+        },
+        engine: {
+            name: 'V8',
+            version: { original: process.versions.v8 }
+        },
+        os: {
+            name: os.type(),
+            version: { original: os.release() }
+        },
+        device: {
+            type: 'server',
+            manufacturer: 'nodejs',
+            model: 'nodejs'
+        }
+    };
 }

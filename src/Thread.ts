@@ -20,8 +20,7 @@ export class Thread<T, U> {
      */
     public constructor(private handler: (data: T) => U) {
         if (!Worker) {
-            console.error('Cannot create thread: Runnign environment does not supports Web worker');
-            return;
+            throw new TypeError('Cannot create thread: Runnign environment does not supports Web worker');
         }
         const blob = new Blob(
             [`onmessage=function(a){var h=${handler.toString()};postMessage(h(a.data))}`],
