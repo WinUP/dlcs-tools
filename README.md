@@ -36,6 +36,34 @@ this.root.map<Promise<Message>>((node, result, feedback) => {
 }, chain);
 ```
 
+### Autoname
+
+```typescript
+import { autoname, toCamelCase, toPascalCase, toSnakeCase } from '@dlcs/tools';
+```
+
+Autoname can deep scan an object and set value of each key to map path using transfer function.
+
+```typescript
+const source = {
+    messageConf: '',
+    responseConf: {
+        mask: '',
+        tag: ''
+    }
+}
+autoname(source);
+// output: { messageConf: '/messageConf', responseConf: { mask: '/responseConf/mask', tag: '/responseConf/tag' } }
+autoname(source, '/', toPascalCase);
+// output: { messageConf: '/MessageConf', responseConf: { mask: '/ResponseConf/Mask', tag: '/ResponseConf/Tag' } }
+autoname(source, '/', toSnakeCase);
+// output: { messageConf: '/message_conf', responseConf: { mask: '/response_conf/mask', tag: '/response_conf/tag' } }
+autoname(source, '.', item => item.toUpperCase());
+// output: { messageConf: '.MESSAGECONF', responseConf: { mask: '.RESPONSECONF.MASK', tag: '.RESPONSECONF.TAG' } }
+```
+
+This function is not immutable, it will change source's content.
+
 ### callStack
 
 ```typescript

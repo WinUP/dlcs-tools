@@ -6,5 +6,6 @@ export * from './InstantDebugger';
 export * from './AdvancedTree';
 export * from './environment';
 export * from './callStack';
+export * from './autoname';
 export * from './isMatch';
 export * from './Thread';

@@ -1,9 +1,16 @@
-var { SerializableNode, environment } = require('./dist');
+var { autoname, toCamelCase, toPascalCase, toSnakeCase } = require('./dist');
 
-const root = SerializableNode.create('root', undefined);
-SerializableNode.set(root, '/test1/test2/test3', 1);
+var source = {
+    testSource1: '',
+    test2: ['' , ''],
+    testSource3: {
+        testSource31: '',
+        test32: {
+            test321: '',
+            TestSource322: ''
+        }
+    }
+}
 
-const node = SerializableNode.find(root, '/test1/test2/test3');
-
-console.log(SerializableNode.get(node, '/'));
-console.log(environment());
+autoname(source, '/', toSnakeCase);
+console.log(source);
