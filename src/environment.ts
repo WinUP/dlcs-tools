@@ -81,7 +81,7 @@ export function environment(): ContextEnvironment {
 
 let context: ContextEnvironment;
 if (typeof navigator !== 'undefined') {
-    context = new UA(navigator);
+    context = new UA(navigator.userAgent);
     let match: RegExpExecArray | null;
     if (match = /Edge\/([\w.]+)/i.exec(navigator.userAgent)) {
         context.browser.name = 'Microsoft Edge';
