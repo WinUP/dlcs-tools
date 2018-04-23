@@ -133,7 +133,7 @@ export class SerializableNode {
         hierarchy.forEach(itemKey => {
             let child = pointer.children.find(v => v.key === itemKey);
             if (!child) {
-                child = SerializableNode.create(itemKey, null);
+                child = SerializableNode.create(itemKey, undefined);
                 pointer.children.push(child);
             }
             pointer = child;

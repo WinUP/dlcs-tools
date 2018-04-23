@@ -7,7 +7,7 @@ function _autoname(source: { [key: string]: any }, splitter: string = '/', prefi
         if (source[key] instanceof Array) {
             return;
         } else if (source[key] instanceof Object) {
-            _autoname(source[key], splitter, `${prefix}/${key}`, rename);
+            _autoname(source[key], splitter, `${prefix}/${rename ? rename(key) : key}`, rename);
         } else {
             source[key] = `${prefix}/${rename ? rename(key) : key}`;
         }

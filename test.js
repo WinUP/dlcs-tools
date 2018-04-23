@@ -12,5 +12,5 @@ var source = {
     }
 }
 
-autoname(source, '/', toSnakeCase);
+autoname(source, '/', toPascalCase);
 console.log(source);
