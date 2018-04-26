@@ -1,17 +1,31 @@
-export function autoname(source: { [key: string]: any }, splitter: string = '/', rename?: (input: string) => string): void {
-    _autoname(source, splitter, '', rename);
-}
-
-function _autoname(source: { [key: string]: any }, splitter: string = '/', prefix?: string, rename?: (input: string) => string): void {
-    Object.keys(source).forEach(key => {
-        if (source[key] instanceof Array) {
-            return;
-        } else if (source[key] instanceof Object) {
-            _autoname(source[key], splitter, `${prefix}/${rename ? rename(key) : key}`, rename);
-        } else if (typeof source[key] === 'string') {
-            source[key] = `${prefix}/${rename ? rename(key) : key}`;
-        }
-    });
+/**
+ * Auto fill object value with object map path
+ * @param source Target object
+ * @param splitter Path splitter (e.g. ```'/'```)
+ * @param renamer Key renamer
+ */
+export function autoname(source: { [key: string]: any }, splitter?: string, renamer?: (input: string) => string): void;
+/**
+ * Auto fill object value with object map path
+ * @param source Target object
+ * @param splitter Path splitter (e.g. ```'/'```)
+ * @param prefix Path prefix (e.g. ```'storage://'```)
+ * @param renamer Key renamer
+ */
+export function autoname(source: { [key: string]: any }, splitter?: string, prefix?: string, renamer?: (input: string) => string): void;
+export function autoname(source: { [key: string]: any }, splitter: string = '/',
+    p3?: string | ((input: string) => string), p4?: (input: string) => string): void {
+        const renamer = typeof p3 === 'string' ? p4 : p3;
+        const prefix = typeof p3 === 'string' ? p3 : '';
+        Object.keys(source).forEach(key => {
+            if (source[key] instanceof Array) {
+                return;
+            } else if (source[key] instanceof Object) {
+                autoname(source[key], splitter, `${prefix}/${renamer ? renamer(key) : key}`, renamer);
+            } else if (typeof source[key] === 'string') {
+                source[key] = `${prefix}/${renamer ? renamer(key) : key}`;
+            }
+        });
 }
 
 export function toCamelCase(input: string): string {
