@@ -21,9 +21,9 @@ export function autoname(source: { [key: string]: any }, splitter: string = '/',
             if (source[key] instanceof Array) {
                 return;
             } else if (source[key] instanceof Object) {
-                autoname(source[key], splitter, `${prefix}/${renamer ? renamer(key) : key}`, renamer);
+                autoname(source[key], splitter, `${prefix}${splitter}${renamer ? renamer(key) : key}`, renamer);
             } else if (typeof source[key] === 'string') {
-                source[key] = `${prefix}/${renamer ? renamer(key) : key}`;
+                source[key] = `${prefix}${splitter}${renamer ? renamer(key) : key}`;
             }
         });
 }

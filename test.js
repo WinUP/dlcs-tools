@@ -12,7 +12,7 @@ var source = {
     }
 }
 
-autoname(source, '/', toPascalCase);
+autoname(source, ':', toPascalCase);
 console.log(source);
 autoname(source, '/', 'storage://', toPascalCase);
 console.log(source);
