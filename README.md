@@ -228,15 +228,17 @@ const new_root = JSON.parse(json); // That's why we only use static functions in
 ### Thread<T, U>
 
 ```typescript
-import { Thread } from '@dlcs/tools';
+import { Thread, ThreadMode } from '@dlcs/tools';
 ```
 
-Create thread using web worker and rxjs. See Thread's documentation comments for more information. Please allow ```blob:``` in your security settings to enable worker.
+Create thread using web worker/promise/setTimeout and rxjs. See Thread's documentation comments for more information. Please allow ```blob:``` in your security settings to enable worker.
+
+Thread has three modes: WebWorker, Promise and setTimeout. If ```mode``` is not given by constructor, Thread will try to use WebWorker first, then Promise, finally setTimeout.
 
 | Field name | Default value | Usage        | Example |
 |-|:-|:-|-:|
 | ```computed: EventEmitter<U>``` | ```new EventEmitter()``` | Callback of data computed | ```thread.computed.subscribe(v => ({}))``` |
-| ```stop(): void``` | | Destroy thread | ```thread.stop()``` |
+| ```stop(): boolean``` | | Destroy thread | ```thread.stop()``` |
 | ```compute(value: T): void``` | | Send a value to thread for compute | ```thread.compute('test')``` |
 
 It should be easy to create native threads now:
@@ -247,4 +249,4 @@ thread.computed.subscribe(value => console.log(value));
 thread.compute('123');
 ```
 
-Notice: handler function (in constructor)'s ```this``` pointer will be redirect to worker's context even using arrow function. Besides, handler function cannot access any data out of worker's context.
+Notice: handler function (in constructor)'s ```this``` pointer will be redirect to worker's context in WebWorker mode. Besides, at that situation handler function cannot access any data out of worker's context.

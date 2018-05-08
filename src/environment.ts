@@ -3,7 +3,7 @@ import * as UA from 'ua-device';
 /**
  * Version code
  */
-export interface VersionCode {
+export interface IVersionCode {
     /**
      * Product name
      */
@@ -30,11 +30,11 @@ export interface VersionCode {
 /**
  * Running context environment information
  */
-export interface ContextEnvironment {
+export interface IContextEnvironment {
     /**
      * Browser information
      */
-    browser: VersionCode & {
+    browser: IVersionCode & {
         /**
          * Browser mode
          */
@@ -43,21 +43,21 @@ export interface ContextEnvironment {
     /**
      * Browser engine
      */
-    engine: VersionCode;
+    engine: IVersionCode;
     /**
      * Opeartion system
      */
-    os: VersionCode;
+    os: IVersionCode;
     /**
      * Device
      */
-    device: ContectDeviceInformation;
+    device: IContectDeviceInformation;
 }
 
 /**
  * Device information
  */
-export interface ContectDeviceInformation {
+export interface IContectDeviceInformation {
     /**
      * Device type
      */
@@ -75,11 +75,11 @@ export interface ContectDeviceInformation {
 /**
  * Get running context environment information
  */
-export function environment(): ContextEnvironment {
+export function environment(): IContextEnvironment {
     return context;
 }
 
-let context: ContextEnvironment;
+let context: IContextEnvironment;
 if (typeof navigator !== 'undefined') {
     context = new UA(navigator.userAgent);
     let match: RegExpExecArray | null;

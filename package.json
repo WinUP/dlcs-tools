@@ -1,6 +1,6 @@
 {
   "name": "@dlcs/tools",
-  "version": "1.0.10",
+  "version": "1.1.0",
   "description": "Utilities for Deus Legem Creation System",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -26,9 +26,9 @@
     "typescript": "2.8.3"
   },
   "dependencies": {
-    "rxjs": "^5.5.10",
+    "rxjs": ">=6.0.0",
     "ua-device": "0.1.10",
-    "uuid": "^3.2.1"
+    "uuid": ">=3.0.0"
   },
   "publishConfig": {
     "access": "public"

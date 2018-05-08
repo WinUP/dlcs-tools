@@ -1,5 +1,5 @@
 import { CancelledEventArgs } from './CancelledEventArgs';
-import { createUUIDString } from './createUUIDString';
+import { uuid } from './uuid';
 
 /**
  * Node status of tree with weight values
@@ -98,7 +98,7 @@ export class AdvancedTree<T> {
 
     public constructor(content?: T | null, id?: string) {
         this.content = content || this.content;
-        this._id = id || createUUIDString();
+        this._id = id || uuid();
     }
 
     /**

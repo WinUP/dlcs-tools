@@ -28,18 +28,30 @@ export function autoname(source: { [key: string]: any }, splitter: string = '/',
         });
 }
 
+/**
+ * Rename input to camel case
+ * @param input Input string
+ */
 export function toCamelCase(input: string): string {
     return input
         .replace(/(?:^\w|[A-Z]|\b\w)/g, (item, index) => index > 0 ? item.toUpperCase() : item.toLowerCase())
         .replace(/\s+/g, '');
 }
 
+/**
+ * Rename input to pascal case
+ * @param input Input string
+ */
 export function toPascalCase(input: string): string {
     return input
         .replace(/(?:^\w|\b\w)/g, item => item.toUpperCase())
         .replace(/\s+/g, '');
 }
 
+/**
+ * Rename input to camel case
+ * @param input snake string
+ */
 export function toSnakeCase(input: string): string {
     return input
         .replace(/(?:^\w|[A-Z]|\b\w|\b\d)/g, (item, index) => index > 0 ? `_${item.toLowerCase()}` : item.toLowerCase())

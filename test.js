@@ -1,18 +1,25 @@
-var { autoname, toCamelCase, toPascalCase, toSnakeCase } = require('./dist');
+var {
+    Thread,
+    ThreadMode,
+    callStack
+} = require('./dist');
 
-var source = {
-    testSource1: '',
-    test2: ['' , ''],
-    testSource3: {
-        testSource31: '',
-        test32: {
-            test321: '',
-            TestSource322: ''
-        }
-    }
+const a = new Thread(data => {
+    return data;
+});
+
+a.computed.subscribe(d => {
+    console.log(d);
+});
+
+if (a.mode === ThreadMode.WebWorker) {
+    console.log('Mode: WebWorker');
+} else if (a.mode === ThreadMode.Promise) {
+    console.log('Mode: Promise');
+} else {
+    console.log('Mode: SetTimeout');
 }
 
-autoname(source, ':', toPascalCase);
-console.log(source);
-autoname(source, '/', 'storage://', toPascalCase);
-console.log(source);
+a.compute('1');
+a.compute('2');
+console.log(callStack());
