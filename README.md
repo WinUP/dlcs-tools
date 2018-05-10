@@ -202,28 +202,32 @@ isValueAvailable('123'); // true
 ### SerializableNode
 
 ```typescript
-import { SerializableNode } from '@dlcs/tools';
+import { SerializableNode, ISerializableNode } from '@dlcs/tools';
 ```
 
 SerializableNode is a way to store simple data like configuration in a tree-based structure that can be serialized to JSON.
 
 ```typescript
-const root = SerializableNode.create('root', undefined); // We need one root node
-SerializableNode.set(root, '/config/message/default_mask', 1); // Save data
-SerializableNode.set(root, '/extra/providers/storage/root_name', 'DLCS');
-const defaultMask = SerializableNode.get<number>(root, '/config/message/default_mask'); // Read data
+const root = new SerializableNode('root', undefined); // We need one root node
+root.set('/config/message/default_mask', 1); // Save data
+root.set('/extra/providers/storage/root_name', 'DLCS');
+const defaultMask = root.get('/config/message/default_mask') as number; // Read data
+
+root.get('/config/message/'); // Will be undefined. Parent node does not have children's data.
 
 // Advanced usages
-const messageConfig = SerializableNode.find(root, '/config/message'); // Get raw message node
-SerializableNode.set(messageConfig, '/default_mask', 1); // Use messageConfig as root in this scene
-const messageConfigAddress = SerializableNode.address(root, messageConfig); // Will get messageConfig's address starts from root: /config/message
-SerializableNode.drop(root, messageConfig); // Drop messageConfig node and all its children
-SerializableNode.drop(root, '/config/message'); // Same as above
+const messageConfig = root.find('/config/message'); // Get raw message node
+messageConfig.set('/default_mask', 1); // Use messageConfig as root in this scene
+const messageConfigAddress = root.address(messageConfig); // Will get messageConfig's address starts from root: /config/message
+root.drop(messageConfig); // Drop messageConfig node and all its children
+root.drop('/config/message'); // Same as above
 
 // Serialize and deserialize
-const json = JSON.stringify(root);
-const new_root = JSON.parse(json); // That's why we only use static functions in SerializableNode. Deserialized objects are not class instances and have no own functions.
+const json = JSON.stringify(root.serialize());
+const new_root = SerializableNode.deserialize(JSON.parse(json));
 ```
+
+**Attention: _$k and _$v are keywords of SerializableNode, they cannot be any node's key (not value).**
 
 ### Thread<T, U>
 

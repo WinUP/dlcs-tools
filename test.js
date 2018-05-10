@@ -1,25 +1,17 @@
 var {
-    Thread,
-    ThreadMode,
-    callStack
+    SerializableNode
 } = require('./dist');
 
-const a = new Thread(data => {
-    return data;
-});
+const a = new SerializableNode('base', 'base_value');
 
-a.computed.subscribe(d => {
-    console.log(d);
-});
+a.set('/state/music/list', [ { v: 100, f: '1' }, { v: 50, f: '2' } ]);
+a.set('/state/script/file', '123.script');
+a.set('/state/script/line', 11);
 
-if (a.mode === ThreadMode.WebWorker) {
-    console.log('Mode: WebWorker');
-} else if (a.mode === ThreadMode.Promise) {
-    console.log('Mode: Promise');
-} else {
-    console.log('Mode: SetTimeout');
-}
+const b = JSON.stringify(a.serialize(), null, 2);
 
-a.compute('1');
-a.compute('2');
-console.log(callStack());
+const a2 = SerializableNode.deserialize(JSON.parse(b));
+
+console.log(a2.get('/state/script/file'));
+
+console.log(JSON.stringify(a2.serialize(), null, 2));
