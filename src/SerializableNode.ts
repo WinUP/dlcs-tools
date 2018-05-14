@@ -64,7 +64,7 @@ export class SerializableNode {
      * @param node Target node or node's address. Should be different than root
      * @description If you want to drop node's data, just set its value to undefined.
      */
-    private drop(node: SerializableNode | string): void {
+    public drop(node: SerializableNode | string): void {
         if (typeof node === 'string') {
             if (node === '/') { return; }
             SerializableNode._dropByAddress(this, node);
