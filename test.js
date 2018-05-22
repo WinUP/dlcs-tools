@@ -1,5 +1,6 @@
 var {
-    SerializableNode
+    SerializableNode,
+    isValueAvailable
 } = require('./dist');
 
 const a = new SerializableNode('base', 'base_value');
@@ -15,3 +16,9 @@ const a2 = SerializableNode.deserialize(JSON.parse(b));
 console.log(a2.get('/state/script/file'));
 
 console.log(JSON.stringify(a2.serialize(), null, 2));
+
+console.log(isValueAvailable(1));
+console.log(isValueAvailable(''));
+console.log(isValueAvailable(null));
+console.log(isValueAvailable(0));
+console.log(isValueAvailable('1'));

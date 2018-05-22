@@ -3,5 +3,5 @@
  * @param data Target data
  */
 export function isValueAvailable<T = any>(data: T): boolean {
-    return data != null && (typeof data === 'string' && data !== '');
+    return data != null && (typeof data !== 'string' || (typeof data === 'string' && data !== ''));
 }
