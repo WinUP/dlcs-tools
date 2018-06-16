@@ -1,8 +1,18 @@
-import { Observable, Subject } from 'rxjs';
-
+/**
+ * Mod use to create thread
+ */
 export enum ThreadMode {
+    /**
+     * Use WebWorker (see [Web worker API](https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API))
+     */
     WebWorker,
+    /**
+     * Use ```Promise```
+     */
     Promise,
+    /**
+     * Use ```setTimeout()```
+     */
     SetTimeout
 }
 
@@ -12,15 +22,11 @@ export enum ThreadMode {
 export class Thread<T, U> {
     private worker: Worker | Promise<void> | number;
     private _mode: ThreadMode;
-    private _subject: Subject<{ success: boolean, data: U }> = new Subject();
-    private _computed: Observable<{ success: boolean, data: U }> = this._subject.asObservable();
 
     /**
-     * Get callback observable of data computed
+     * Callback observable of data computed
      */
-    public get computed(): Observable<{ success: boolean, data: U }> {
-        return this._computed;
-    }
+    public computed: ((result: { success: boolean, data: U }) => void) | undefined;
 
     /**
      * Get thread mode
@@ -31,8 +37,8 @@ export class Thread<T, U> {
 
     /**
      * Create a thread
-     * @param mode Thread working mode
      * @param handler Runner. Runner's code will be copied to an isolated worker context.
+     * @param mode Thread working mode (automatically detected if not given)
      */
     public constructor(private handler: (data: T) => U, mode?: ThreadMode) {
         switch (mode) {
@@ -45,10 +51,10 @@ export class Thread<T, U> {
                         { type: 'application/javascript' });
                     this.worker = new Worker(URL.createObjectURL(blob));
                     this.worker.onmessage = (event: MessageEvent) => {
-                        this._subject.next({ success: true, data: event.data });
+                        this.send(true, event.data);
                     };
                     this.worker.onerror = (event: ErrorEvent) => {
-                        this._subject.next({ success: false, data: event.error });
+                        this.send(false, event.error);
                     };
                     this._mode = ThreadMode.WebWorker;
                     break;
@@ -100,19 +106,25 @@ export class Thread<T, U> {
         } else if (typeof Promise !== 'undefined' && this.worker instanceof Promise) {
             this.worker = this.worker.then(() => {
                 const data = this.handler(value);
-                this._subject.next({ success: true, data: data });
+                this.send(true, data);
             }).catch(error => {
-                this._subject.next({ success: false, data: error });
+                this.send(false, error);
             });
         } else {
             this.worker = setTimeout(() => {
                 try {
                     const data = this.handler(value);
-                    this._subject.next({ success: true, data: data });
+                    this.send(true, data);
                 } catch (ex) {
-                    this._subject.next({ success: false, data: ex });
+                    this.send(false, ex);
                 }
             });
+        }
+    }
+
+    private send(success: boolean, data: any): void {
+        if (this.computed) {
+            this.computed({ success: success, data: data });
         }
     }
 }

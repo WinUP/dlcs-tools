@@ -13,27 +13,21 @@ import { AdvancedTree, AdvancedTreeNodeStatus } from '@dlcs/tools';
 
 Advanced tree is a normal tree with weight values and on/off switches on each node, it has method called ```map()``` that use user given mapper function to map each node of this tree using DFS (O(n)).
 
-| Field name | Default value | Usage        | Example |
-|-|:-|:-|-:|
-| ```parent: Nullable<AdvancedTree<T>>``` | ```null``` | Get or set parent | ```node.parent = new AdvancedTree<number>() ``` |
-| ```status: number``` | ```AdvancedTreeNodeStatus.Unavailable``` | Get status | ```const e = node.status``` |
-| ```priority: number``` | ```0``` | Get or set weight value | ```node.priority = 100``` |
-| ```next: Nullable<AdvancedTree<T>>``` | ```null``` | Get next node of same level | ```node = node.next``` |
-| ```previous: Nullable<AdvancedTree<T>>``` | ```null``` | Get previous node of same level | ```node = node.previous``` |
-| ```id: string``` | Given by constructor | Get ID | ```const id = node.id``` |
-| ```enabled: boolean``` | ```true``` | Get or set enabled | ```node.enabled = false``` |
-| ```content: T \| undefined``` | ```undefined``` |  Get or set content | ```node.content = (message) => message``` |
-| ```destroy(): void``` | | Delete this node with all its children | ```node.destroy()``` |
-| ```map<U>(mapper: (node: AdvancedTree<T>, result: U, feedback: CancelledEventArgs) => U, initialData: U): U``` | | Map the tree from this node | ```node.map((node, result, feedback) => { feedback.cancelled = true; return result; }, null)``` |
-| ```printStructure(): void``` | | Print struccture starts from this node | ```node.printStructure()``` |
-
-For example, in message service, we use ```map()``` to call all listeners:
-
 ```typescript
-const chain = new Promise<Message>((resolve, reject) => resolve(data));
-this.root.map<Promise<Message>>((node, result, feedback) => {
-    /* Link all available listeners to promise chain */
-}, chain);
+const root = new AdvancedTree<number>(0);
+const child1 = new AdvancedTree<number>(1, 'ID: 1');
+const child2 = new AdvancedTree<number>(2, 'ID: 2');
+
+child1.parent = child2.parent = root; // set parent
+child2.next; // in this situation, next is undefined
+child12.priority = 100; // set priority
+child2.next; // now next is child1
+child1.previous; // also child1's previous is child2
+child2.enabled = false; // disable child2
+child1.content += child2.content; // read and write content
+const sum = root.map<number>((node, result, feedback) => result += node.content, 0); // sum all node's value
+// because child2 is disabled, result should be child1.content + root.content
+root.destroy(); // destroy this tree
 ```
 
 ### Autoname
@@ -85,13 +79,7 @@ A function that returns current call stack's information, includes identifiers, 
 ```typescript
 const stack: CallStackItem[] = callStack();
 console.log(`Current code is in file ${stack[0].fileName}, line number ${stack[0].line}`);
-```
-
-We use this function to guess listener's ID if not given by user.
-
-```typescript
-const stack = callStack();
-new Listener(`[${stack[2].identifiers[0]}]${createUUIDString()}`, service);
+// in safari, information will be less than other browsers
 ```
 
 ### CancelledEventArgs
@@ -101,10 +89,6 @@ import { CancelledEventArgs } from '@dlcs/tools';
 ```
 
 A class only has one bollean field called cancelled. Use for user when produce cancelable data in message loop.
-
-| Field name | Default value | Usage        | Example |
-|-|:-|:-|-:|
-| ```cancelled: boolean``` | ```false``` | Should the event be cancelled | ```arg.cancelled = true``` |
 
 ```typescript
 const arg = new CancelledEventArgs();
@@ -132,40 +116,8 @@ import { environment, ContextEnvironment } from '@dlcs/tools';
 A function returns context environment includes browser info, device info, etc.
 
 ```typescript
-const info: ContextEnvironment = environment();
+const info: ContextEnvironment = environment;
 console.log(`Browser: ${info.browser.name}, OS: ${info.system.name}, Device: ${info.device.name}`);
-```
-
-### InstantDebugger
-
-```typescript
-import { InstantDebugger } from '@dlcs/tools';
-```
-
-A class that create short links under ```window.InstantDebug``` for debugging usages.
-
-| Field name | Default value | Usage        | Example |
-|-|:-|:-|-:|
-| ```static register(name: string, content: any): void``` | | Register an instant debug tool | ```InstantDebugger.register('test', () => ({}))``` |
-| ```static remove(name: string): void``` | | Remove an instant debug tool | ```InstantDebugger.remove('test')``` |
-
-For example, in message service, if user set ```useDebugger = true```, then when running application, type ```window.InstantDebug.messageStructureGraph()``` in console can output application's listener structure. Message service use this to register function to InstantDebugger:
-
-```typescript
-public set useDebugger(value: boolean) {
-    if (value) {
-        InstantDebugger.register('messageStructureGraph', () => {
-            this.root.printStructure();
-        });
-    } else {
-        InstantDebugger.remove('messageStructureGraph');
-    }
-    this._debugMode = value;
-}
-```
-
-```typescript
-window.InstantDebugger.messageStructureGraph();
 ```
 
 ### isMatch
@@ -239,18 +191,13 @@ Create thread using web worker/promise/setTimeout and rxjs. See Thread's documen
 
 Thread has three modes: WebWorker, Promise and setTimeout. If ```mode``` is not given by constructor, Thread will try to use WebWorker first, then Promise, finally setTimeout.
 
-| Field name | Default value | Usage        | Example |
-|-|:-|:-|-:|
-| ```computed: EventEmitter<U>``` | ```new EventEmitter()``` | Callback of data computed | ```thread.computed.subscribe(v => ({}))``` |
-| ```stop(): boolean``` | | Destroy thread | ```thread.stop()``` |
-| ```compute(value: T): void``` | | Send a value to thread for compute | ```thread.compute('test')``` |
-
-It should be easy to create native threads now:
-
 ```typescript
 const thread = new Thread<string, number>((value: string) => +value);
-thread.computed.subscribe(value => console.log(value));
 thread.compute('123');
+thread.computed = value => {
+    console.log(value)
+    thread.stop(); // destroy thread if thread is not using Promise mode
+};
 ```
 
 Notice: handler function (in constructor)'s ```this``` pointer will be redirect to worker's context in WebWorker mode. Besides, at that situation handler function cannot access any data out of worker's context.

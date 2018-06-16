@@ -34,12 +34,12 @@ export class AdvancedTree<T> {
     /**
      * Get or set parent
      */
-    public get parent(): AdvancedTree<T> | null {
+    public get parent(): AdvancedTree<T> | undefined {
         return this._parent;
-    } public set parent(value: AdvancedTree<T> | null) {
+    } public set parent(value: AdvancedTree<T> | undefined) {
         this.setParent(value);
     }
-    private _parent: AdvancedTree<T> | null = null;
+    private _parent: AdvancedTree<T> | undefined;
 
     /**
      * Get status
@@ -63,18 +63,18 @@ export class AdvancedTree<T> {
     /**
      * Get next node of same level
      */
-    public get next(): AdvancedTree<T> | null {
+    public get next(): AdvancedTree<T> | undefined {
         return this._next;
     }
-    private _next: AdvancedTree<T> | null = null;
+    private _next: AdvancedTree<T> | undefined;
 
     /**
      * Get previous node of same level
      */
-    public get previous(): AdvancedTree<T> | null {
+    public get previous(): AdvancedTree<T> | undefined {
         return this._previous;
     }
-    private _previous: AdvancedTree<T> | null = null;
+    private _previous: AdvancedTree<T> | undefined;
 
     /**
      * Get ID
@@ -94,10 +94,10 @@ export class AdvancedTree<T> {
     /**
      * Get or set content
      */
-    public content: T | undefined = undefined;
+    public content: T | undefined;
 
-    public constructor(content?: T | null, id?: string) {
-        this.content = content || this.content;
+    public constructor(content?: T, id?: string) {
+        this.content = content;
         this._id = id || uuid();
     }
 
@@ -107,7 +107,7 @@ export class AdvancedTree<T> {
     public destroy(): void {
         this._status |= AdvancedTreeNodeStatus.Removing;
         this.children.forEach(node => node.destroy());
-        this.setParent(null);
+        this.setParent(undefined);
         this._status = AdvancedTreeNodeStatus.Unavailable;
     }
 
@@ -209,7 +209,7 @@ export class AdvancedTree<T> {
         this._status &= ~AdvancedTreeNodeStatus.ChangingPriority;
     }
 
-    private setParent(parent: AdvancedTree<T> | null): void {
+    private setParent(parent?: AdvancedTree<T>): void {
         this._status |= AdvancedTreeNodeStatus.ChangingParent;
         if (this._parent != null) {
             const index = this._parent.children.findIndex(v => v === this);
@@ -220,8 +220,8 @@ export class AdvancedTree<T> {
             if (this._next) {
                 this._next._previous = this._previous;
             }
-            this._next = null;
-            this._previous = null;
+            this._next = undefined;
+            this._previous = undefined;
         }
         this._parent = parent;
         if (this._parent == null) {
@@ -237,16 +237,16 @@ export class AdvancedTree<T> {
                 }
                 if (i === this._parent.children.length - 1) {
                     this._parent.children.push(this);
-                    this._next = null;
+                    this._next = undefined;
                     this._previous = this._parent.children[i];
                     break;
                 }
             }
             if (this._next === undefined) {
-                this._next = null;
+                this._next = undefined;
             }
             if (this._previous === undefined) {
-                this._previous = null;
+                this._previous = undefined;
             }
             if (this._next) {
                 this._next._previous = this;

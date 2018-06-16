@@ -75,21 +75,17 @@ export interface IContectDeviceInformation {
 /**
  * Get running context environment information
  */
-export function environment(): IContextEnvironment {
-    return context;
-}
-
-let context: IContextEnvironment;
+let environment: IContextEnvironment;
 if (typeof navigator !== 'undefined') {
-    context = new UA(navigator.userAgent);
+    environment = new UA(navigator.userAgent);
     let match: RegExpExecArray | null;
     if (match = /Edge\/([\w.]+)/i.exec(navigator.userAgent)) {
-        context.browser.name = 'Microsoft Edge';
-        context.browser.version.original = match[1];
+        environment.browser.name = 'Microsoft Edge';
+        environment.browser.version.original = match[1];
     }
 } else {
     const os = require('os');
-    context = {
+    environment = {
         browser: {
             name: 'NodeJS',
             version: { original: process.versions.node },
@@ -110,3 +106,5 @@ if (typeof navigator !== 'undefined') {
         }
     };
 }
+
+export { environment };
